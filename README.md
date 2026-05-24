@@ -10,9 +10,20 @@ The initial benchmark was conducted using an unmodified model to establish a per
 
 * **Model:** `HuggingFaceTB/SmolVLM-500M-Instruct`
 * **Dataset:** `nyu-visionx/CV-Bench` (Test Split - 2638 samples)
-* **Hardware:** RTX 4060 (8GB VRAM)
+* **Hardware:** RTX 5060 (8GB VRAM)
 * **Baseline Accuracy:** 43.18%
 
+## Experiments & Analysis
+
+**Experiment 1: Standard LoRA Fine-Tuning**
+* **Approach:** Fine-tuned the model on a subset of the LLaVA-instruct dataset using standard conversational formatting.
+* **Result:** 42.04% (a slight drop from baseline). 
+* **Analysis:** The model suffered from a formatting mismatch (free-text training vs. multiple-choice evaluation) and under-training (only 1 epoch on 460 samples). While spatial understanding may have improved, the model lost its ability to reliably output exact multiple-choice tokens (e.g., "(a)").
+
+**Experiment 2: Task-Aligned Multiple-Choice Fine-Tuning**
+* **Approach:** Addressed the format mismatch by dynamically injecting dummy choices during training, forcing the model to learn spatial reasoning while strictly adhering to a multiple-choice structure. Increased training to 4 epochs on 2000 samples.
+* **Result:** 45.60% (+2.42% over baseline).
+* **Analysis:** Aligning the training data format with the evaluation benchmark allowed the model's newly acquired spatial reasoning capabilities to map correctly to the CV-Bench metrics. This confirms that small VLMs require strict structural alignment alongside conceptual training.
 ## Project Structure
 * `configs/`: Hyperparameters and global settings.
 * `datasets/`: Data loading and preprocessing pipelines.
@@ -75,6 +86,9 @@ spatial-vlm/
 │   └── seed.py
 │
 ├── README.md
+├── setup.py
 ├── requirements.txt
 └── run.py
 ```
+
+
