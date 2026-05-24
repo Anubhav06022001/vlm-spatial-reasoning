@@ -27,24 +27,24 @@ def run_baseline():
         choices = item.get("choices", [])
         question = item["question"]
 
-        # if choices:
-        #     choices_text = " ".join([f"({chr(97+i)}) {c}" for i, c in enumerate(choices)])
-        #     prompt_text = f"{question}\nOptions: {choices_text}\nAnswer strictly with only the correct option letter, like (a) or (b)."
-        # else:
-        #     prompt_text = f"{question}\nAnswer strictly with only the correct option letter, like (a) or (b)."
-
         if choices:
-            choices_text = "\n".join([f"({chr(97+i)}) {c}" for i, c in enumerate(choices)])
-            prompt_text = (
-                f"Question: {question}\n"
-                f"Options:\n{choices_text}\n"
-                "Instructions: You must answer by providing ONLY the single character of the correct option enclosed in parentheses. Do not provide the text of the answer. Do not explain your reasoning. For example, output '(a)' and nothing else."
-            )
+            choices_text = " ".join([f"({chr(97+i)}) {c}" for i, c in enumerate(choices)])
+            prompt_text = f"{question}\nOptions: {choices_text}\nAnswer strictly with only the correct option letter, like (a) or (b)."
         else:
-            prompt_text = (
-                f"Question: {question}\n"
-                "Instructions: You must answer by providing ONLY the single character of the correct option enclosed in parentheses. Do not provide the text of the answer. Do not explain your reasoning. For example, output '(a)' and nothing else."
-            )
+            prompt_text = f"{question}\nAnswer strictly with only the correct option letter, like (a) or (b)."
+
+        # if choices:
+        #     choices_text = "\n".join([f"({chr(97+i)}) {c}" for i, c in enumerate(choices)])
+        #     prompt_text = (
+        #         f"Question: {question}\n"
+        #         f"Options:\n{choices_text}\n"
+        #         "Instructions: You must answer by providing ONLY the single character of the correct option enclosed in parentheses. Do not provide the text of the answer. Do not explain your reasoning. For example, output '(a)' and nothing else."
+            # )
+        # else:
+        #     prompt_text = (
+        #         f"Question: {question}\n"
+        #         "Instructions: You must answer by providing ONLY the single character of the correct option enclosed in parentheses. Do not provide the text of the answer. Do not explain your reasoning. For example, output '(a)' and nothing else."
+        #     )
 
         true_answer = str(item["answer"]).strip().lower()
 
@@ -80,7 +80,8 @@ def run_baseline():
         #     correct_predictions += 1
 
          # 4. ============== Smart Answer Matching ===============
-        # Clean the true letter (e.g., "(c)" becomes "c")
+           
+       # Clean the true letter (e.g., "(c)" becomes "c")
         clean_true_letter = true_answer.replace("(", "").replace(")", "").strip()
         # Clean the model's output to look for letters or numbers
         clean_model_words = model_answer.replace(":", " ").replace("(", " ").replace(")", " ").replace(".", " ").split()
@@ -105,7 +106,7 @@ def run_baseline():
 
         if is_correct:
             correct_predictions += 1
-
+        
             ##############################
 
     # 5. =============== Print Baseline Result ===============

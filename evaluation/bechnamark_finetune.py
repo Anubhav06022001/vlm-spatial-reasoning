@@ -1,10 +1,7 @@
 import torch
 from datasets import load_dataset
-# from transformers import AutoProcessor, AutoModelForVision2Seq
 from transformers import AutoProcessor, Idefics3ForConditionalGeneration
 from tqdm import tqdm
-
-# for testing it again fine tuned model
 from peft import PeftModel
 
 
@@ -35,12 +32,25 @@ def run_baseline():
         choices = item.get("choices", [])
         question = item["question"]
 
-        if choices:
-            choices_text = " ".join([f"({chr(97+i)}) {c}" for i, c in enumerate(choices)])
-            prompt_text = f"{question}\nOptions: {choices_text}\nAnswer strictly with only the correct option letter, like (a) or (b)."
-        else:
-            prompt_text = f"{question}\nAnswer strictly with only the correct option letter, like (a) or (b)."
+        # if choices:
+        #     choices_text = " ".join([f"({chr(97+i)}) {c}" for i, c in enumerate(choices)])
+        #     prompt_text = f"{question}\nOptions: {choices_text}\nAnswer strictly with only the correct option letter, like (a) or (b)."
+        # else:
+        #     prompt_text = f"{question}\nAnswer strictly with only the correct option letter, like (a) or (b)."
 
+
+        if choices:
+            choices_text = "\n".join([f"({chr(97+i)}) {c}" for i, c in enumerate(choices)])
+            prompt_text = (
+                f"Question: {question}\n"
+                f"Options:\n{choices_text}\n"
+                "Instructions: You must answer by providing ONLY the single character of the correct option enclosed in parentheses. Do not provide the text of the answer. Do not explain your reasoning. For example, output '(a)' and nothing else."
+            )
+        else:
+            prompt_text = (
+                f"Question: {question}\n"
+                "Instructions: You must answer by providing ONLY the single character of the correct option enclosed in parentheses. Do not provide the text of the answer. Do not explain your reasoning. For example, output '(a)' and nothing else."
+            )
 
         true_answer = str(item["answer"]).strip().lower()
         messages = [
@@ -66,49 +76,30 @@ def run_baseline():
              print(f"\nQ: {question} | True: {true_answer} | Model guessed: {model_answer}")
         # --------------------------------------
 
-        '''  
-       # 4. ============== check correct answer by matching ===============
-        clean_true = true_answer.replace("(", "").replace(")", "").strip()
-        clean_model_words = model_answer.replace(":", " ").replace("(", " ").replace(")", " ").split()
-
-
-        if clean_true in clean_model_words:
-            correct_predictions += 1'''
-        
-        ####################################################################
             
-         # 4. ============== Smart Answer Matching ===============
-        # Clean the true letter (e.g., "(c)" becomes "c")
+         # 4. ============== Answer Matching ===============
         clean_true_letter = true_answer.replace("(", "").replace(")", "").strip()
-        # Clean the model's output to look for letters or numbers
         clean_model_words = model_answer.replace(":", " ").replace("(", " ").replace(")", " ").replace(".", " ").split()
 
         is_correct = False
-        
-        # Condition A: Did the model output the correct letter? (e.g., "c")
         if clean_true_letter in clean_model_words:
             is_correct = True
         else:
-            # Condition B: Did the model output the correct actual value? (e.g., "6")
             try:
-                # Convert letter to index ('a'=0, 'b'=1, 'c'=2)
                 true_index = ord(clean_true_letter) - 97 
                 if 0 <= true_index < len(choices):
                     true_value = str(choices[true_index]).strip().lower()
-                    # Check if the exact value text is in the model's response
                     if true_value in clean_model_words:
                         is_correct = True
             except:
-                pass # Fallback in case of weird formatting
+                pass 
 
         if is_correct:
             correct_predictions += 1
-        
-        ##############################################################################
 
     # 5. =============== Print Baseline Result ===============
     accuracy = (correct_predictions / total_samples) * 100
-    print(f"\n--- Baseline Results ---")
+    print(f"\n--- Finetuned Results ---")
     print(f"Final Accuracy: {accuracy:.2f}%")
 
 if __name__ == "__main__":
