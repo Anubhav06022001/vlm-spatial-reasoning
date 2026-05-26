@@ -6,7 +6,7 @@ def load_and_filter_spatial_dataset(split_limit=25000, target_samples=2000):
     dataset = hf_datasets.load_dataset("HuggingFaceH4/llava-instruct-mix-vsft", split=f"train[:{split_limit}]")
 
     spatial_words = ["left", "right", "behind", "front", "closest", "furthest", "next to", "count", "how many"]
-    
+
     def is_spatial(example):
         try:
             text = example["messages"][0]["content"][1]["text"]

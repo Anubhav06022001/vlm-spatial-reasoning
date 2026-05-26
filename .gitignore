@@ -142,3 +142,4 @@ core.*
 # Legacy files
 # ==========================================
 old_finetune.py
+benchmark_finetune.py

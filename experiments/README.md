@@ -1,6 +1,4 @@
 # Experiments Directory
-This folder acts as a version-controlled vault storing local configurations, weight checkpoints, and specific run notes.
+This folder acts as a version-controlled vault storing local configurations and weight checkpoints.
 
-* **baseline/**: Stores evaluation logs and initial performance markers for completely unmodified models.
-* **encoder_swap/**: Contains tracking information and performance metrics for trials testing different visual backbones.
-* **depth_finetune/**: Saves checkpoints and training histories for models optimized explicitly on 3D-aware depth data.
+* **depth_finetune/**: Saves the LoRA adapter weights (`adapter_config.json`, `adapter_model.safetensors`) generated during spatial fine-tuning training loops.

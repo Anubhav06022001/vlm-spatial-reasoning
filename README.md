@@ -1,9 +1,7 @@
 # Spatial Understanding for Small Vision-Language Models
 
 <p align="center">
-
 Parameter-Efficient Adaptation of Small Vision-Language Models for Spatial Reasoning
-
 </p>
 
 ---
@@ -20,9 +18,7 @@ The focus is improving performance on spatial understanding tasks including:
 
 Evaluation is performed on:
 
-```text
-nyu-visionx/CV-Bench
-```
+`nyu-visionx/CV-Bench`
 
 ---
 
@@ -32,15 +28,11 @@ Improve spatial understanding in small VLMs while preserving parameter efficienc
 
 ### Model
 
-```text
-HuggingFaceTB/SmolVLM-500M-Instruct
-```
+`HuggingFaceTB/SmolVLM-500M-Instruct`
 
 ### Hardware
 
-```text
-RTX 5060 (8GB VRAM)
-```
+`RTX 5060 (8GB VRAM)`
 
 ### Methodology
 
@@ -57,15 +49,11 @@ RTX 5060 (8GB VRAM)
 
 Dataset:
 
-```text
-nyu-visionx/CV-Bench
-```
+`nyu-visionx/CV-Bench`
 
-Evaluation split:
+Test Split:
 
-```text
-2638 samples
-```
+`2638 samples`
 
 ### Baseline Performance
 
@@ -83,16 +71,12 @@ Evaluation split:
 - LLaVA-instruct subset
 - Standard conversational supervision
 
----
-
 ## Result
 
 | Configuration | Accuracy |
 |:--------------|----------:|
 | Baseline | 43.10% |
 | Standard LoRA | 42.04% |
-
----
 
 ## Analysis
 
@@ -124,6 +108,20 @@ Key modifications:
 
 ---
 
+# Experiment 3 — Expanding Vocabulary
+
+A subsequent ablation study attempted to improve performance by expanding the spatial vocabulary filter to include terms like:
+
+- `above`
+- `inside`
+- `outside`
+
+This increased dataset size but reduced final accuracy to **45.11%**.
+
+This suggests that for 500M parameter models, task specificity and strict format alignment are more critical than increasing dataset volume.
+
+---
+
 ## Final Results
 
 | Configuration | Accuracy |
@@ -133,9 +131,7 @@ Key modifications:
 
 ### Improvement
 
-```text
-+2.92%
-```
+**+2.92%**
 
 ---
 
@@ -143,11 +139,11 @@ Key modifications:
 
 Evaluation was performed using highly restrictive answer formatting.
 
-The baseline model frequently violated formatting constraints despite containing partial spatial understanding.
+The baseline model frequently violated formatting constraints despite demonstrating partial spatial understanding.
 
-Task-aligned fine-tuning successfully improved instruction adherence while preserving underlying reasoning capabilities.
+Task-aligned fine-tuning improved instruction adherence while preserving benchmark-aligned spatial prediction capability.
 
-This suggests that small VLM performance on benchmark tasks depends not only on representation quality but also on structural alignment between supervision and evaluation.
+These observations suggest that small VLM performance depends not only on representation quality but also on structural alignment between supervision and evaluation.
 
 ---
 
@@ -168,17 +164,16 @@ spatial-vlm/
 │
 ├── evaluation/
 │   ├── benchmark.py
-│   └── bechnamark_fine_tune.py
+│   └── visualize.py
+│
+├── experiments/
+│   └── depth_finetune/
 │
 ├── run.py
 ├── setup.py
-│
 ├── README.md
-│
 └── requirements.txt
 ```
-
----
 
 ### datasets/
 
@@ -220,6 +215,42 @@ python training/finetune.py
 
 ```bash
 python evaluation/benchmark.py
+```
+
+---
+
+## Quick Start Pipeline
+
+### 1. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Train the Model
+
+```bash
+python run.py --mode train
+```
+
+### 3. Evaluate the Models
+
+Evaluate Base Model:
+
+```bash
+python run.py --mode eval-base
+```
+
+Evaluate Fine-Tuned LoRA Model:
+
+```bash
+python run.py --mode eval-tuned
+```
+
+### 4. Generate Visualizations
+
+```bash
+python run.py --mode visualize
 ```
 
 ---
