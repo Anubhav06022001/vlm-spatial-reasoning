@@ -10,7 +10,7 @@ Parameter-Efficient Adaptation of Small Vision-Language Models for Spatial Reaso
 
 This repository investigates methods to improve spatial reasoning capabilities of small Vision-Language Models (~500M–1B parameters) using parameter-efficient fine-tuning.
 
-The focus is improving performance on spatial understanding tasks including:
+The focus is on improving performance on spatial understanding tasks including:
 
 - Relative positioning (left / right / behind)
 - Depth reasoning (closest / furthest)
@@ -61,12 +61,13 @@ Test Split:
 |:------|----------:|
 | SmolVLM-500M-Instruct | 43.10% |
 
+> **Note on Model Dynamism:** Small VLMs (~500M parameters) are highly dynamic and extremely sensitive to prompt phrasing and image resolution. The baseline score of 43.10% reflects its performance on a standard, simple conversational prompt.
+
 ---
 
 # Experiment 1 — Standard LoRA Fine-Tuning
 
 ## Approach
-
 - LoRA adaptation
 - LLaVA-instruct subset
 - Standard conversational supervision
@@ -79,11 +80,7 @@ Test Split:
 | Standard LoRA | 42.04% |
 
 ## Analysis
-
-Performance degraded slightly.
-
-Observed failure modes:
-
+Performance degraded slightly. Observed failure modes:
 - Format mismatch between training and evaluation
 - Under-training
 - Weak adherence to strict multiple-choice output constraints
@@ -95,30 +92,30 @@ The model learned conversational behavior but struggled to reliably output exact
 # Experiment 2 — Task-Aligned Multiple Choice Fine-Tuning
 
 ## Approach
-
 Spatial examples were filtered and reformatted into strict multiple-choice supervision.
 
 Key modifications:
-
 - Dynamic option generation
 - Spatial task filtering
 - LoRA fine-tuning
 - Instruction alignment with benchmark evaluation format
 - Increased training duration
 
+## Result
+Accuracy improved to **47.84%**. By fine-tuning the model on a highly restrictive instruction template, it successfully internalized the formatting logic alongside the spatial geometric concepts.
+
 ---
 
 # Experiment 3 — Expanding Vocabulary
 
 A subsequent ablation study attempted to improve performance by expanding the spatial vocabulary filter to include terms like:
-
 - `above`
 - `inside`
 - `outside`
 
-This increased dataset size but reduced final accuracy to **45.11%**.
+This increased dataset size but reduced final accuracy to **45.11%** (a 2% gain over baseline, but lower than Experiment 2). 
 
-This suggests that for 500M parameter models, task specificity and strict format alignment are more critical than increasing dataset volume.
+This suggests that for 500M parameter models, dataset purity, task specificity, and strict format alignment are significantly more critical than indiscriminately increasing dataset volume.
 
 ---
 
@@ -126,12 +123,13 @@ This suggests that for 500M parameter models, task specificity and strict format
 
 | Configuration | Accuracy |
 |:--------------|----------:|
-| Baseline | 43.10% |
-| Fine-Tuned (LoRA) | 46.02% |
+| Baseline (Simple Prompt) | 43.10% |
+| Fine-Tuned LoRA (Strict Prompt) | 47.84% |
 
 ### Improvement
+**+4.74%**
 
-**+2.92%**
+![Spatial Accuracy Comparison](results/plots/spatial_accuracy_comparison.png)
 
 ---
 
@@ -265,6 +263,6 @@ Instruction formatting and evaluation alignment can materially influence benchma
 
 <p align="center">
 
-Research Prototype • Spatial Reasoning • Parameter Efficient Fine-Tuning • Small VLMs
+Spatial Reasoning • Parameter Efficient Fine-Tuning • Small VLMs
 
 </p>
