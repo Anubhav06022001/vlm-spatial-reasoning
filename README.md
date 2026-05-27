@@ -193,29 +193,7 @@ Benchmark scripts and accuracy evaluation.
 
 Saved adapters and experimental artifacts.
 
----
 
-## Reproducibility
-
-### Installation
-
-```bash
-pip install -r requirements.txt
-```
-
-### Training
-
-```bash
-python training/finetune.py
-```
-
-### Evaluation
-
-```bash
-python evaluation/benchmark.py
-```
-
----
 
 ## Quick Start Pipeline
 

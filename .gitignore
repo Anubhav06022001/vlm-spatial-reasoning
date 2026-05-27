@@ -91,7 +91,7 @@ hf_cache/
 # ==========================================
 # Experiment Outputs
 # ==========================================
-results/plots/
+# results/plots/
 results/tables/
 
 experiments/**/outputs/
